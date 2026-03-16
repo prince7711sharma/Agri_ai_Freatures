@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Farming Insights</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f5f7f6;
+}
+
+.header {
+  padding: 20px 40px;
+  background: white;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.header h1 {
+  margin: 0;
+  color: #0b5d47;
+}
+
+.tabs {
+  display: flex;
+  gap: 16px;
+  padding: 15px 40px;
+  background: #eef2f0;
+}
+
+.tab {
+  padding: 10px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #dce8e3;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  padding: 30px 40px;
+}
+
+.form-card {
+  flex: 1;
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+}
+
+.form-grid .full {
+  grid-column: span 2;
+}
+
+label {
+  font-weight: 600;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.result-card {
+  width: 260px;
+  background: #0b5d47;
+  color: white;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.result-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.big-number {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.icon {
+  font-size: 28px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 12px;
+  border: none;
+  background: #0b5d47;
+  color: white;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.section { display: none; }
+.active-section { display: flex; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>AI Farming Insights</h1>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showSection('yield', event)">Yield Predictor</div>
+  <div class="tab" onclick="showSection('fertilizer', event)">Fertilizer AI</div>
+  <div class="tab" onclick="showSection('crop', event)">Crop Suggest AI</div>
+</div>
+
+<!-- ================= YIELD ================= -->
+<div id="yield" class="container section active-section">
+
+<div class="form-card">
+  <h3>Yield Prediction</h3>
+
+  <div class="form-grid">
+    <div>
+      <label>Crop</label>
+      <input id="cropName" value="Rice">
+    </div>
+
+    <div>
+      <label>State</label>
+      <input id="stateName" value="Punjab">
+    </div>
+
+    <div>
+      <label>Season</label>
+      <select id="seasonName">
+        <option>Kharif</option>
+        <option>Rabi</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Year</label>
+      <input id="yearValue" value="2013">
+    </div>
+
+    <div class="full">
+      <label>Area</label>
+      <input id="areaValue" value="2">
+    </div>
+
+    <div class="full">
+      <button onclick="predictYield()">Predict Yield</button>
+    </div>
+  </div>
+</div>
+
+<div class="result-card">
+  <div class="result-title">
+    <span class="icon">🌾</span> Yield Result
+  </div>
+
+  <div>Yield</div>
+  <div id="yieldResult" class="big-number">--</div>
+
+  <div style="margin-top:10px;">Production</div>
+  <div id="productionResult">--</div>
+</div>
+
+</div>
+
+<!-- ================= FERTILIZER ================= -->
+<div id="fertilizer" class="container section">
+
+<div class="form-card">
+  <h3>Fertilizer Recommendation</h3>
+
+  <div class="form-grid">
+    <div><label>Temperature</label><input id="temp" value="26"></div>
+    <div><label>Humidity</label><input id="humidity" value="52"></div>
+    <div><label>Moisture</label><input id="moisture" value="38"></div>
+    <div><label>Soil Type</label><input id="soil" value="Loamy"></div>
+    <div><label>Crop Type</label><input id="cropType" value="Wheat"></div>
+    <div><label>Nitrogen</label><input id="nitrogen" value="37"></div>
+    <div><label>Potassium</label><input id="potassium" value="0"></div>
+    <div><label>Phosphorous</label><input id="phosphorous" value="0"></div>
+
+    <div class="full">
+      <button onclick="predictFertilizer()">Recommend Fertilizer</button>
+    </div>
+  </div>
+</div>
+
+<div class="result-card">
+  <div class="result-title">
+    <span class="icon">🧪</span> Recommendation
+  </div>
+  <div id="fertResult" class="big-number">--</div>
+</div>
+
+</div>
+
+<!-- ================= CROP ================= -->
+<div id="crop" class="container section">
+
+<div class="form-card">
+  <h3>Crop Suggest AI</h3>
+
+  <div class="form-grid">
+    <div><label>N</label><input id="cN" value="90"></div>
+    <div><label>P</label><input id="cP" value="42"></div>
+    <div><label>K</label><input id="cK" value="43"></div>
+    <div><label>Temperature</label><input id="cTemp" value="20.8"></div>
+    <div><label>Humidity</label><input id="cHum" value="82"></div>
+    <div><label>pH</label><input id="cPh" value="6.5"></div>
+
+    <div class="full">
+      <label>Rainfall</label>
+      <input id="cRain" value="202">
+    </div>
+
+    <div class="full">
+      <button onclick="predictCrop()">Suggest Crop</button>
+    </div>
+  </div>
+</div>
+
+<div class="result-card">
+  <div class="result-title">
+    <span class="icon">🌱</span> Recommended Crop
+  </div>
+  <div id="cropResult" class="big-number">--</div>
+</div>
+
+</div>
+
+<script>
+function showSection(name, event) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
+  document.getElementById(name).classList.add("active-section");
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
+}
+
+async function predictYield() {
+  const data = {
+    state: stateName.value,
+    season: seasonName.value,
+    crop: cropName.value,
+    year: parseInt(yearValue.value),
+    area: parseFloat(areaValue.value)
+  };
+
+  const res = await fetch("http://127.0.0.1:8000/ai/yield-predict", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  yieldResult.innerText = result.predicted_yield.toFixed(2);
+  productionResult.innerText = result.predicted_production.toFixed(2);
+}
+
+async function predictFertilizer() {
+  const data = {
+    temperature: parseFloat(temp.value),
+    humidity: parseFloat(humidity.value),
+    moisture: parseFloat(moisture.value),
+    soil_type: soil.value,
+    crop_type: cropType.value,
+    nitrogen: parseFloat(nitrogen.value),
+    potassium: parseFloat(potassium.value),
+    phosphorous: parseFloat(phosphorous.value)
+  };
+
+  const res = await fetch("http://127.0.0.1:8000/ai/fertilizer", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  fertResult.innerText = result.recommended_fertilizer;
+}
+
+async function predictCrop() {
+  const data = {
+    N: parseFloat(cN.value),
+    P: parseFloat(cP.value),
+    K: parseFloat(cK.value),
+    temperature: parseFloat(cTemp.value),
+    humidity: parseFloat(cHum.value),
+    ph: parseFloat(cPh.value),
+    rainfall: parseFloat(cRain.value)
+  };
+
+  const res = await fetch("http://127.0.0.1:8000/ai/crop-suggest", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  cropResult.innerText = result.recommended_crop;
+}
+</script>
+
+</body>
+</html>
